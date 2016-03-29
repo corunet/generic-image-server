@@ -128,7 +128,7 @@ function cache(url, response, completePath, width, height, ext, fit, force) {
 
 }
 
-app.get('/:x/:y/:param1/:param2', function (request, response) {
+app.get('/:x/:y/:param1', function (request, response) {
 
 	console.log('New Request');
 
@@ -152,13 +152,13 @@ app.get('/:x/:y/:param1/:param2', function (request, response) {
 	if (height > heightmax) //max height
 		height = heightmax;
 
-	var name = param2.split('.')[0];
+	var name = param1.split('.')[0];
 	var fullname = encodeURIComponent(name);
-	var ext = param2.split('.').pop();
+	var ext = param1.split('.').pop();
 
 	console.log(fullname + '.' + ext);
 
-	var completePath = imagepath + param1 + '/' + param2;
+	var completePath = imagepath + param1;
 	var url = encodeURI(request.url);
 	console.log(url);
 
