@@ -1,7 +1,7 @@
 # Generic Image Server with Node.js
 
 ## Description
-Images server implemented with Node.js. The server provides an image and resize it maintaining its aspect ratio.
+Image server implemented with Node.js. The server provides an image and resize it maintaining its aspect ratio.
 You need to specify a image resolution in order to resize it.
 
 By default, if the original image resolutions is smaller than the requested one, it cannot be extended. To force the extend, you must specify in the url a parameter **force=true**.
