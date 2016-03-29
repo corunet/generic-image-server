@@ -12,6 +12,7 @@ You can also crop the image with the resolution requested in the url. To do that
  - [Git](https://git-scm.com/)
  - [Node.js and npm](nodejs.org)
  - [Redis](http://redis.io/)
+ - [ImageMagick](http://www.imagemagick.org/script/index.php)
  
 ## Configuration
 
