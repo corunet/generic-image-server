@@ -1,4 +1,4 @@
-# Generic Images Server with Node.js
+# Generic Image Server with Node.js
 
 ## Description
 Images server implemented with Node.js. The server provides an image and resize it maintaining its aspect ratio.
