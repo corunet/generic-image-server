@@ -17,14 +17,15 @@ You can also crop the image with the resolution requested in the url. To do that
 
 For all the configurations, you need to edit the `config.js` file.
 
-1. Edit the *imagepath* with the path of the images you want to serve.
-2. Configure a Redis server, and edit the *config.redis attributes*  with the parameters of your server.
-3. The server is listening by default on port 3003. You can change it editing the *config.default.port*.
-4. You can specify a max resolution editing *config.default.xmax* and *config.default.ymax*.
+1. Edit the **imagepath** with the path of the images you want to serve.
+2. Configure a Redis server, and edit the **config.redis attributes**  with the parameters of your server.
+3. The server is listening by default on port 3003. You can change it editing the **config.default.port**.
+4. You can specify a max resolution editing **config.default.xmax** and **config.default.ymax**.
 
 ## Usage
 First, run your Redis Server, then: 
 ```sh
+    $ git clone https://github.com/alopezsanchez/generic-image-server.git && cd generic-image-server
     $ npm install
     $ node images.js
 ```
