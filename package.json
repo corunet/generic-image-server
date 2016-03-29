@@ -1,0 +1,16 @@
+{
+  "name": "image_server",
+  "version": "0.0.0",
+  "description": "Generic image server. server can resize or cut images, with a specific resolution passed in the url",
+  "main": "images.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies" : {
+    "redis" : "2.5.2",
+    "express" : ">4.4.0",
+    "gm" : "1.21.1"
+  },
+  "author": "Corunet",
+  "license": "MIT"
+}
