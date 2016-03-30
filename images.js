@@ -96,7 +96,6 @@ function showImage (url, response, completePath, width, height, ext, fit, force)
 				var ttl= 3600;
 				client.setex(url, ttl, buf);
 			});
-
 		});
 	});
 }
@@ -123,9 +122,6 @@ function cache(url, response, completePath, width, height, ext, fit, force) {
 			}
 		});
 	}
-
-
-
 }
 
 app.get('/:x/:y/:param1', function (request, response) {
@@ -173,7 +169,6 @@ app.get('/:x/:y/:param1', function (request, response) {
 			response.send(value);
 		}
 	});
-
 });
 
 app.listen(port);
