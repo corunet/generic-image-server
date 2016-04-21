@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 
 var fs = require('fs'),
 	gm = require('gm').subClass({
@@ -17,7 +17,10 @@ var fs = require('fs'),
 		"jpg": "image/jpeg",
 		"png": "image/png",
 		"gif": "image/gif"
-	};
+	},
+	// global variable used as a "mutex" for the image
+	// if the server is processing an image, it block it
+	process = {};
 
 client.on('connect', function () {
 	console.log('Connected to Redis Server\n');
@@ -30,71 +33,97 @@ app.use(function (request, response, next) {
 });
 
 
-function showImage (url, response, completePath, width, height, ext, fit, force) {
-	
-	var widthResize = width;
-	var heightResize = height;
-	response.writeHead(200, {
+function showImage(url, response, completePath, width, height, ext, fit, force) {
+	return new Promise((resolve, reject) => {
+		var widthResize = width;
+		var heightResize = height;
+		response.writeHead(200, {
 			"Content-Type": mime[ext]
-	});
-	
-	var imagen = gm(completePath); //create resized image
-	imagen.size(function (err, size) {
-		if (!err) {
-			var originalRatio = size.width / size.height;
-			var newRatio = width / height;
-			var isSmaller = false; 
-			
-			// if original image is lower than the requested one, it can be extended
-			if (size.width < width && size.height < height) {
-				isSmaller = true;
-			};
+		});
 
-			if (fit === 'true') {
-				if (originalRatio > newRatio) { // limita the height
-					widthResize = null;
-				} else { // limit the width
-					heightResize = null;
+		var imagen = gm(completePath); //create resized image
+		imagen.size(function (err, size) {
+			if (!err) {
+				var originalRatio = size.width / size.height;
+				var newRatio = width / height;
+				var isSmaller = false; 
+				
+				// if original image is lower than the requested one, it can be extended
+				if (size.width < width && size.height < height) {
+					isSmaller = true;
+				};
+
+				if (fit === 'true') {
+					if (originalRatio > newRatio) { // limita the height
+						widthResize = null;
+					} else { // limit the width
+						heightResize = null;
+					}
+
+					if (!isSmaller) {
+						// if the parameter of the gm.resize() is null, it resize keeping the aspect ratio
+						imagen.resize(widthResize, heightResize);
+					}
+					else if (force === 'true' && isSmaller) {
+						imagen.resize(widthResize, heightResize);
+					}
+
+					imagen.gravity('Center')
+						.crop(width, height);
+				} else {
+					// the original image only can be extended if force is true
+					if (!isSmaller) {
+						imagen.resize(width, height);
+					}
+					else if (force === 'true' && isSmaller) {
+						imagen.resize(width, height);
+					}
 				}
 
-				if (!isSmaller) {
-					// if the parameter of the gm.resize() is null, it resize keeping the aspect ratio
-					imagen.resize(widthResize, heightResize);
-				}
-				else if (force === 'true' && isSmaller) {
-					imagen.resize(widthResize, heightResize);
-				}
+			} else {
+				reject(err);
+				response.statusCode = 500;
+				response.end();
 
-				imagen.gravity('Center')
-					.crop(width, height);
+				return;
 			}
-			else {
-				// the original image only can be extended if force is true
-				if (!isSmaller) {
-					imagen.resize(width, height);
+
+			imagen.noProfile();
+			imagen.stream(function (error, stdout, stdin) {
+				if (error) {
+					reject('ERROR 1' + error);
+					response.statusCode = 500;
+					response.end();
+					return;
 				}
-				else if (force === 'true' && isSmaller) {
-					imagen.resize(width, height);
+
+				try {
+					stdout.pipe(response);
+
+				} catch (e) {
+					reject('ERROR 2' + e);
+					response.statusCode = 500;
+					response.end();
+					return;
 				}
-			}
 
-		};
+				var buf = new Buffer('');
+				stdout.on('data', function (chunk) {
+					buf = Buffer.concat([buf, chunk]);
+				});
+				stdout.on('end', function () {
+					client.setex(url, config.redis.ttl, buf);
+					resolve(buf);
+				});
+				stdout.on('error', function (error) {
+					reject('ERROR 3' + error);
+					stdout.end();
+					response.statusCode = 500;
+					response.end();
 
-		imagen.noProfile();
-		imagen.stream(function (error, stdout, stdin) {
-			try {
-				stdout.pipe(response);
+					stdout.end();
+				})
 
-			} catch (e) {
-				console.log(e);
-			}
-			var buf = new Buffer('');
-			stdout.on('data', function (chunk) {
-				buf = Buffer.concat([buf, chunk]);
-			});
-			stdout.on('end', function () {
-				var ttl= 3600;
-				client.setex(url, ttl, buf);
 			});
 		});
 	});
@@ -102,31 +131,32 @@ function showImage (url, response, completePath, width, height, ext, fit, force)
 
 
 function cache(url, response, completePath, width, height, ext, fit, force) {
-
-	// check if the path is a file system or a uri
-	if (completePath.indexOf("http://") > -1) { 
-		http.get(completePath, function (res) {
-			showImage(url, response, completePath, width, height, ext, fit, force);
-		});
-	}
-	else {
-		fs.readFile(completePath, function (error, data) {
-			console.log(completePath+'\n');
-			if (!error) {
-				showImage(url, response, completePath, width, height, ext, fit, force);
-
-			} else {
-				response.statusCode = 404;
+	return new Promise((resolve, reject) => {
+		// check if the path is a file system or a uri
+		if (completePath.indexOf("http://") > -1) {
+			http.get(completePath, function (res) {
+				showImage(url, response, completePath, width, height, ext, fit, force).then(resolve, reject);
+			}).on('error', function (e) {
 				response.end();
-				console.log("ERROR obtaining image\n");
-			}
-		});
-	}
+				reject(e.message);
+			})
+		}
+		else {
+			fs.readFile(completePath, function (error, data) {
+				if (!error) {
+					showImage(url, response, completePath, width, height, ext, fit, force).then(resolve, reject);
+				} else {
+					response.statusCode = 404;
+					response.end();
+					reject("ERROR obtaining image" + completePath + "\n");
+				}
+			});
+		}
+	});
 }
 
-app.get('/:x/:y/:param1', function (request, response) {
 
-	console.log('New Request');
+app.get('/:x/:y/:param1/:param2', function (request, response) {
 
 	// local variables
 	var param1 = request.params.param1;
@@ -148,25 +178,43 @@ app.get('/:x/:y/:param1', function (request, response) {
 	if (height > heightmax) //max height
 		height = heightmax;
 
-	var name = param1.split('.')[0];
-	var fullname = encodeURIComponent(name);
-	var ext = param1.split('.').pop();
+	var ext = param2.split('.').pop();
 
-	console.log(fullname + '.' + ext);
-
-	var completePath = imagepath + param1;
+	var completePath = imagepath + param1 + '/' + param2;
 	var url = encodeURI(request.url);
-	console.log(url);
 
 	// search in Redis if the url requested is cached
 	client.get(url, function (err, value) {
-		if (value === null) { // image not cached
-			console.log('Image not cached');
-			cache(url, response, completePath, width, height, ext, fit, force);
-		} else {
-			console.log('Image cached\n');
+		if (!err) {
 			response.set('Content-type', mime[ext.toLowerCase]);
-			response.send(value);
+
+			if (value === null) { // image not cached
+				// if the image is being processed, the server block it until process[url] doesnt exist
+				// With the use of promises, we ensure the image is not being processed more than one at a time
+				if (process[url]) {
+					process[url].then((img) => {
+						response.end(img);
+					}, (reason) => {
+						console.error("ERROR. Waiting a traitment", reason);
+						response.statusCode = 500;
+						response.end();
+					});
+				} else {
+					process[url] = cache(url, response, completePath, width, height, ext, fit, force);
+					process[url].catch((reason) => {
+						console.error(reason);
+					}).then(function () {
+						delete process[url];
+					});
+				}
+			} else {
+				response.send(value);
+			}
+		}
+		else {
+			console.error("ERROR reading from redis", err);
+			response.statusCode = 500;
+			response.end();
 		}
 	});
 });
