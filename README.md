@@ -24,7 +24,7 @@ For all the configurations, you need to edit the `config.js` file.
 4. You can specify a max resolution editing **config.default.xmax** and **config.default.ymax**.
 
 ## Usage
-First, run your Redis Server, then: 
+With your Redis Server running: 
 ```sh
     $ git clone https://github.com/alopezsanchez/generic-image-server.git && cd generic-image-server
     $ npm install
