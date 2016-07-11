@@ -12,5 +12,9 @@
     "gm" : "1.21.1"
   },
   "author": "Corunet",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alopezsanchez/generic-image-server.git"
+  }
 }
