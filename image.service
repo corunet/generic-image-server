@@ -1,0 +1,11 @@
+[Unit]
+Description=Generic image server
+
+[Service]
+ExecStart=/usr/bin/env node /opt/generic-image-server/images.js
+Restart=always
+User=imaged
+
+[Install]
+WantedBy=multi-user.target
+

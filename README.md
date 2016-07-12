@@ -30,6 +30,7 @@ With your Redis Server running:
     $ npm install
     $ node images.js
 ```
+There's also a `systemd` service file example included. You may want to edit it and change `ExecStart` and/or `User`.
 
 ## Examples
 
