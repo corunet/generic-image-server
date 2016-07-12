@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const argv = require('yargs')
-        .usage('Usage: $0 [opciones] path')
+        .usage('Usage: $0 [options] pathToImage')
 	.demand(1,1)
         .options({
                 'port': {
@@ -22,7 +22,7 @@ const argv = require('yargs')
                         alias: 'x',
                         describe: 'Maximum width',
                         type: 'number',
-                        group: 'Images',
+                        group: 'Image service',
                         default: 1200
                 },
                 'yMax': {

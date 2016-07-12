@@ -16,19 +16,32 @@ You can also crop the image with the resolution requested in the url. To do that
  
 ## Configuration
 
-For all the configurations, you need to edit the `config.js` file.
+You can customize the service through command line arguments:
 
-1. Edit the **imagepath** with the path of the images you want to serve.
-2. Configure a Redis server, and edit the **config.redis attributes**  with the parameters of your server.
-3. The server is listening by default on port 3003. You can change it editing the **config.default.port**.
-4. You can specify a max resolution editing **config.default.xmax** and **config.default.ymax**.
+```sh
+Usage: images.js [options] pathToImageFolder
+
+Image service
+  --port, -p  Port number the service will listen to  [number] [default: 3002]
+  --yMax, -y  Maximum height  [number] [default: 1200]
+  --xMax, -x  Maximum width  [number] [default: 1200]
+
+Redis cache
+  --redisHost, -h  Redis server hostname  [string] [default: "localhost"]
+  --redisPort, -o  Redis server port  [number] [default: 6379]
+  --redisTTL, -t   Redis cache TTL  [number] [default: 3600]
+
+Opciones:
+  --help  Show help  [boolean]
+```
+
 
 ## Usage
 With your Redis Server running: 
 ```sh
     $ git clone https://github.com/alopezsanchez/generic-image-server.git && cd generic-image-server
     $ npm install
-    $ node images.js
+    $ node images.js /path/to/image/repository
 ```
 There's also a `systemd` service file example included. You may want to edit it and change `ExecStart` and/or `User`.
 
