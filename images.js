@@ -1,5 +1,65 @@
 #!/usr/bin/env node
 
+const argv = require('yargs')
+        .usage('Usage: $0 [opciones] path')
+	.demand(1,1)
+        .options({
+                'port': {
+                        alias: 'p',
+                        describe: 'Port number the service will listen to',
+                        type: 'number',
+                        group: 'Image service',
+                        default: 3002
+                },
+                'yMax': {
+                        alias: 'y',
+                        describe: 'Maximum height',
+                        type: 'number',
+                        group: 'Image service',
+                        default: 1200
+                },
+                'xMax': {
+                        alias: 'x',
+                        describe: 'Maximum width',
+                        type: 'number',
+                        group: 'Images',
+                        default: 1200
+                },
+                'yMax': {
+                        alias: 'y',
+                        describe: 'Maximum height',
+                        type: 'number',
+                        group: 'Image service',
+                        default: 1200
+                },
+                'redisHost': {
+                        alias: 'h',
+                        describe: 'Redis server hostname',
+                        type: 'string',
+                        group: 'Redis cache',
+                        default: 'localhost'
+                },
+                'redisPort': {
+                        alias: 'o',
+                        describe: 'Redis server port',
+                        type: 'number',
+                        group: 'Redis cache',
+                        default: 6379
+                },
+                'redisTTL': {
+                        alias: 't',
+                        describe: 'Redis cache TTL',
+                        type: 'number',
+                        group: 'Redis cache',
+                        default: 3600
+                }
+        })
+        .help()
+        .argv;
+
+const basePath = argv._;
+
+
 var fs = require('fs'),
 	gm = require('gm').subClass({
 		imageMagick: true
@@ -8,10 +68,8 @@ var fs = require('fs'),
 	express = require('express'),
 	buffer = require('buffer'),
 	redis = require('redis'),
-	config = require('./config'),
 	app = express(),
-	client = redis.createClient(config.redis.port, config.redis.host, { 'return_buffers': true }),
-	port = config.default.port,
+	client = redis.createClient(argv.redisPort, argv.redisHost, { 'return_buffers': true }),
 	mime = {
 		"jpeg": "image/jpeg",
 		"jpg": "image/jpeg",
@@ -21,6 +79,8 @@ var fs = require('fs'),
 	// global variable used as a "mutex" for the image
 	// if the server is processing an image, it block it
 	process = {};
+
+
 
 client.on('connect', function () {
 	console.log('Connected to Redis Server\n');
@@ -112,7 +172,7 @@ function showImage(url, response, completePath, width, height, ext, fit, force) 
 					buf = Buffer.concat([buf, chunk]);
 				});
 				stdout.on('end', function () {
-					client.setex(url, config.redis.ttl, buf);
+					client.setex(url, argv.redisTTL, buf);
 					resolve(buf);
 				});
 				stdout.on('error', function (error) {
@@ -148,7 +208,7 @@ function cache(url, response, completePath, width, height, ext, fit, force) {
 				} else {
 					response.statusCode = 404;
 					response.end();
-					reject("ERROR obtaining image" + completePath + "\n");
+					reject("ERROR obtaining image " + completePath + "\n");
 				}
 			});
 		}
@@ -167,20 +227,15 @@ app.get('/:x/:y/:param1/:param2', function (request, response) {
 	var force = request.query.force;
 
 
-	// config variables
-	var imagepath = config.default.imagepath;
-	var widthmax = config.default.xmax;
-	var heightmax = config.default.ymax;
-
 	// limit max width and height
-	if (width > widthmax) //max width
-		width = widthmax;
-	if (height > heightmax) //max height
-		height = heightmax;
+	if (width > argv.xmax) //max width
+		width = argv.xmax;
+	if (height > argv.ymax) //max height
+		height = argv.ymax;
 
 	var ext = param2.split('.').pop();
 
-	var completePath = imagepath + param1 + '/' + param2;
+	var completePath = basePath + param1 + '/' + param2;
 	var url = encodeURI(request.url);
 
 	// search in Redis if the url requested is cached
@@ -219,5 +274,7 @@ app.get('/:x/:y/:param1/:param2', function (request, response) {
 	});
 });
 
-app.listen(port);
-console.log('Application listen on port %d...', port);
+// TODO: wait to Redis server
+app.listen(argv.port, function() {
+	console.log('Application listen on port %d...', argv.port);
+});
