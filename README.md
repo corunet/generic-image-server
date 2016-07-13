@@ -47,7 +47,7 @@ There's also a `systemd` service file example included. You may want to edit it 
 
 ## Examples
 
-- `localhost:3003/400/400/image2.jpg`
-- `localhost:3003/1200/1200/image2.jpg?fit=true`
-- `localhost:3003/400/400/image2.jpg?force=true`
-- `localhost:3003/400/400/image2.jpg?fit=true&force=true`
+- `localhost:3003/400/400/images/image2.jpg`
+- `localhost:3003/1200/1200/images/image2.jpg?fit=true`
+- `localhost:3003/400/400/images/image2.jpg?force=true`
+- `localhost:3003/400/400/images/image2.jpg?fit=true&force=true`
