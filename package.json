@@ -1,6 +1,6 @@
 {
   "name": "generic-image-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generic image server. You can resize or cut images, with a specific resolution passed in the url",
   "main": "images.js",
   "scripts": {
