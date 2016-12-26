@@ -39,7 +39,7 @@ Opciones:
 ## Usage
 With your Redis Server running: 
 ```sh
-    $ git clone https://github.com/alopezsanchez/generic-image-server.git && cd generic-image-server
+    $ npm install generic-image-server && cd node_modules/generic-image-server
     $ npm install
     $ node images.js /path/to/image/repository
 ```
