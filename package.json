@@ -1,6 +1,6 @@
 {
-  "name": "image_server",
-  "version": "0.0.0",
+  "name": "generic-image-server",
+  "version": "1.0.0",
   "description": "Generic image server. server can resize or cut images, with a specific resolution passed in the url",
   "main": "images.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "redis": "2.5.2",
     "yargs": "^4.8.0"
   },
-  "author": "Corunet",
+  "author": "Corunet S.L.",
   "license": "MIT",
   "repository": {
     "type": "git",
