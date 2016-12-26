@@ -25,13 +25,6 @@ const argv = require('yargs')
                         group: 'Image service',
                         default: 1200
                 },
-                'yMax': {
-                        alias: 'y',
-                        describe: 'Maximum height',
-                        type: 'number',
-                        group: 'Image service',
-                        default: 1200
-                },
                 'redisHost': {
                         alias: 'h',
                         describe: 'Redis server hostname',
@@ -106,12 +99,12 @@ function showImage(url, response, completePath, width, height, ext, fit, force) 
 			if (!err) {
 				var originalRatio = size.width / size.height;
 				var newRatio = width / height;
-				var isSmaller = false; 
-				
+				var isSmaller = false;
+
 				// if original image is lower than the requested one, it can be extended
 				if (size.width < width && size.height < height) {
 					isSmaller = true;
-				};
+				}
 
 				if (fit === 'true') {
 					if (originalRatio > newRatio) { // limita the height
@@ -182,7 +175,7 @@ function showImage(url, response, completePath, width, height, ext, fit, force) 
 					response.end();
 
 					stdout.end();
-				})
+				});
 
 			});
 		});
@@ -199,7 +192,7 @@ function cache(url, response, completePath, width, height, ext, fit, force) {
 			}).on('error', function (e) {
 				response.end();
 				reject(e.message);
-			})
+			});
 		}
 		else {
 			fs.readFile(completePath, function (error, data) {
