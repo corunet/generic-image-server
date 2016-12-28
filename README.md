@@ -1,4 +1,4 @@
-# Generic Image Server with Node.js
+# Generic Image Server with Node.js [![npm version](https://badge.fury.io/js/generic-image-server.svg)](https://badge.fury.io/js/generic-image-server)
 
 ## Description
 Image server implemented with Node.js. The server provides an image and resize it maintaining its aspect ratio.
