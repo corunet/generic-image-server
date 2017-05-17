@@ -52,6 +52,13 @@ const argv = require('yargs')
 
 const basePath = argv._;
 
+const consoleOptions = {
+    colors: {
+        stamp: 'yellow'
+    }
+};
+
+require("console-stamp")(console, consoleOptions);
 
 var fs = require('fs'),
     gm = require('gm').subClass({
@@ -84,7 +91,6 @@ client.on('connect', () => {
 client.on('error', (error) => {
     if (error.code === 'ECONNREFUSED') {
         redisConnection = false;
-        //console.error('Redis error', error);
     }
 });
 
