@@ -1,33 +1,33 @@
 {
-    "name": "generic-image-server",
-    "keywords": [
-        "generic",
-        "image",
-        "server",
-        "resize",
-        "cut",
-        "aspect",
-        "ratio",
-        "node",
-        "url"
-    ],
-    "version": "1.0.2",
-    "description": "Generic image server. You can resize or cut images, with a specific resolution passed in the url",
-    "main": "images.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "dependencies": {
-        "console-stamp": "^0.2.5",
-        "express": ">4.4.0",
-        "gm": "1.21.1",
-        "redis": "2.5.2",
-        "yargs": "^4.8.0"
-    },
-    "author": "Corunet S.L.",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/alopezsanchez/generic-image-server.git"
-    }
+  "name": "generic-image-server",
+  "keywords": [
+    "generic",
+    "image",
+    "server",
+    "resize",
+    "cut",
+    "aspect",
+    "ratio",
+    "node",
+    "url"
+  ],
+  "version": "1.1.0",
+  "description": "Generic image server. You can resize or cut images, with a specific resolution passed in the url",
+  "main": "images.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "console-stamp": "^0.2.5",
+    "express": ">4.4.0",
+    "gm": "1.21.1",
+    "redis": "2.5.2",
+    "yargs": "^4.8.0"
+  },
+  "author": "Corunet S.L.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alopezsanchez/generic-image-server.git"
+  }
 }
