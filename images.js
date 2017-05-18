@@ -89,9 +89,7 @@ client.on('connect', () => {
 });
 
 client.on('error', (error) => {
-    if (error.code === 'ECONNREFUSED') {
-        redisConnection = false;
-    }
+    redisConnection = false;
 });
 
 
