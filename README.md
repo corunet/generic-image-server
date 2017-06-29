@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3a56a16945604be0b9ee7c8b5c4df99d)](https://www.codacy.com/app/alopezsanchez/generic-image-server?utm_source=github.com&utm_medium=referral&utm_content=alopezsanchez/generic-image-server&utm_campaign=badger)
 # Generic Image Server with Node.js [![npm version](https://badge.fury.io/js/generic-image-server.svg)](https://badge.fury.io/js/generic-image-server)
 
 ## Description
