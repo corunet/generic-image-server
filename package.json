@@ -11,7 +11,7 @@
     "node",
     "url"
   ],
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Generic image server. You can resize or cut images, with a specific resolution passed in the url",
   "main": "images.js",
   "scripts": {
