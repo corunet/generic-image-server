@@ -13,9 +13,9 @@ You can also crop the image with the resolution requested in the url. To do that
 ## Prerequisites
  - [Git](https://git-scm.com/)
  - [Node.js and npm](https://nodejs.org/en/)
- - [Redis](http://redis.io/)
+ - [Redis](http://redis.io/) (optional)
  - [ImageMagick](http://www.imagemagick.org/script/index.php)
- 
+
 ## Configuration
 
 You can customize the service through command line arguments:
@@ -29,23 +29,22 @@ Image service
   --xMax, -x  Maximum width  [number] [default: 1200]
 
 Redis cache
+  --cache,     -c  Redis use [boolean] [default: true]
   --redisHost, -h  Redis server hostname  [string] [default: "localhost"]
   --redisPort, -o  Redis server port  [number] [default: 6379]
-  --redisTTL, -t   Redis cache TTL  [number] [default: 3600]
+  --redisTTL,  -t  Redis cache TTL  [number] [default: 3600]
 
 Opciones:
   --help  Show help  [boolean]
 ```
 
-
 ## Usage
-With your Redis Server running: 
+With your Redis Server running:
 ```sh
     $ npm install generic-image-server && cd node_modules/generic-image-server
     $ npm install
-    $ node images.js /path/to/image/repository
+    $ node images.js --no-cache /path/to/image/repository
 ```
-There's also a `systemd` service file example included. You may want to edit it and change `ExecStart` and/or `User`.
 
 ## Examples
 
